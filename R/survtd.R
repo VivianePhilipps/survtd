@@ -164,9 +164,12 @@ survtd<-function(formula, data, id,visit.time,model="Cox",method="MIJM",M=5,G=5,
   cumhz <- basehaz(coxph(Surv(datU[, tname], datU[, ename]) ~
                            1))
   time <- datU[, tname]
-  cumhz <- merge(as.data.frame(time), cumhz, by = c("time"),
-                 all.x = TRUE, sort = F, suffixes = c("", "y"))[, "hazard"]
-  datU$cumhz <- cumhz
+  ##cumhz <- merge(as.data.frame(time), cumhz, by = c("time"),
+  ##               all.x = TRUE, sort = F, suffixes = c("", "y"))[, "hazard"]
+    ##datU$cumhz <- cumhz
+    colnames(cumhz) <- c("cumhz", tname)
+    datU <- merge(datU, cumhz)
+    
   intnames<-vector()
   for (Z in fnames) {
     if(is.factor(datU[,Z]))
