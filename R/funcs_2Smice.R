@@ -53,7 +53,7 @@ mice.impute.lmm <-
         ##if (!identical(ids, ids2))
         ##  stop(paste0("Trying to impute for individuals who did not have ",
         ##              "random effect estimates from available case data."))
-      if(length(ids2) < length(ds))
+      if(length(ids2) < length(ids))
       {
           ## on restreint b.star aux sujets vu apres le premier temps d'evt
           ienlev <- which(!(ids %in%ids2))
