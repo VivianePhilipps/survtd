@@ -50,10 +50,17 @@ mice.impute.lmm <-
         data2 <- data
         data2[is.na(data2[, nam]), nam] <- 0
         ids2  <- sort(unique(unlist(data2[!ry, nameG], FALSE, FALSE)))
-        if (!identical(ids, ids2))
-          stop(paste0("Trying to impute for individuals who did not have ",
-                      "random effect estimates from available case data."))
-
+        ##if (!identical(ids, ids2))
+        ##  stop(paste0("Trying to impute for individuals who did not have ",
+        ##              "random effect estimates from available case data."))
+      if(length(ids2) < length(ds))
+      {
+          ## on restreint b.star aux sujets vu apres le premier temps d'evt
+          ienlev <- which(!(ids %in%ids2))
+          benlev <- sapply(ienlev, function(k) (k-1)*nRanef + 1:nRanef)
+          b.star <- b.star[-as.vector(benlev)]
+      }
+      
         formulaGLMER2 = as.formula(paste(nam,"~1+",paste(namesX,collapse="+")))
         X <- model.matrix(formulaGLMER2, data2[!ry, ])
 
@@ -473,7 +480,7 @@ mice2<-function (data, m = 5, method = vector("character", length = ncol(data)),
   }
   from <- 1
   to <- from + maxit - 1
-  q <- survtd::sampler2(p, data, m, imp, r, visitSequence, c(from, to),
+  q <- sampler2(p, data, m, imp, r, visitSequence, c(from, to),
                 printFlag, ...)
   for (j in p$visitSequence) p$data[(!r[, j]), j] <- NA
   imp <- q$imp[1:nvar]
